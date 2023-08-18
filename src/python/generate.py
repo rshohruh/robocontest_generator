@@ -2,12 +2,12 @@ import os
 import subprocess
 s = ""
 k = 0
-starting_test = input("Starting test: ")
+starting_test = int(input("Starting test: "))
 if starting_test < 1:
     print("Error of number starting test")
     exit(0)
 
-ending_test = input("Ending test: ")
+ending_test = int(input("Ending test: "))
 if ending_test < 1:
     print("Error of number ending test")
     exit(0)
@@ -20,7 +20,7 @@ for i in range(starting_test, ending_test+1):
     else:
         s = f"python3 input.py > {input_file}"
     
-    k = subprocess.call(s, shell=True)
+    k = os.system(s)
 
     if k == 0:
         print(f"Test {i:04} OK")
