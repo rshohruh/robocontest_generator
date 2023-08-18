@@ -18,8 +18,6 @@ Linux & Mac uchun:
 
 
 ## Ushbu amallarni bajarganingizdan so'ng, `masala_nomi` nomli yangi papka yaratiladi. 
-Ushbu papka ichidagi fayllar:
-*   `generate.cpp` testlarni tuzish uchun ishlatiladi. Siz masalalarning sonini, uning ichida nimalar bo'lishi kerakligini qo'lda yozishingiz kerak. `randint(a, b)` funksiyasi [a, b] oralig'idagi taxminiy son generatsiya qiladi. Generatsiya muvaffaqiyatli yakunlangan so'ng sizda `tests` nomli yangi papka va uning ichida testlar paydo bo'ladi.
-*    Agar yechim C++ tilida bo'lsa, `main.cpp` ichiga kodni joylashtiring, agar Pythonda bo'lsa, `main.py` ichiga kodni joylashtiring.
-*   `compile.cpp` - `generate.cpp` muvaffaqiyatli tugatilgan so'ng, ushbu dasturni ishga tushiring.
-*   `checker.cpp`, `checker.py` Checker yozish uchun ishlatiladi.
+* `input.*` testcaselarning input formati qanday bo'lishi kerakligini yozib chiqasiz. Yozib bo'lgandan so'ng, `generate.*` faylini ishga tushiring.
+* `main.*` masala yechimining kodini shu yerga joylayiz (output fayllarni generatsiya qilish uchun). So'ng, `compile.*` faylini ishga tushiring.
+* Tayyor bo'lgan testlar `tests` nomli faylda saqlanadi. Ushbu faylni zip holatga keltirib, tizimga yuklashingiz mumkin.
