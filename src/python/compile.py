@@ -16,7 +16,7 @@ while os.path.exists(input_file):
         s = f"python3 main.py < {input_file} > {output_file}"
 
     start = time.time()
-    k = subprocess.call(s, shell=True)
+    k = os.system(s)
     end = time.time()
 
     time_taken = end - start
