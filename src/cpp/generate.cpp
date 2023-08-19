@@ -15,6 +15,9 @@ string to_4digit(int n) {
 
 signed main() {
 
+    // check if tests folder is not exist
+    if(filesystem::exists("tests")) filesystem::create_directory("tests");
+    
     string s;
     int k;
     #ifdef _WIN32

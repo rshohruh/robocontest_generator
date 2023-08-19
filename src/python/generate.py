@@ -1,5 +1,9 @@
 import os
-import subprocess
+
+# check if the folder is not exists
+if not os.path.exists("tests"):
+    os.makedirs("tests")
+
 s = ""
 k = 0
 starting_test = int(input("Starting test: "))
