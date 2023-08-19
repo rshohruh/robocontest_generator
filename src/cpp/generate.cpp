@@ -7,9 +7,7 @@ using namespace std;
 
 string to_4digit(int n) {
     string s = to_string(n);
-    while (s.size() < 4) {
-        s = "0" + s;
-    }
+    s.insert(0, 4 - s.size(), '0');
     return s;
 }
 
@@ -17,7 +15,7 @@ signed main() {
 
     // check if tests folder is not exist
     if(filesystem::exists("tests")) filesystem::create_directory("tests");
-    
+
     string s;
     int k;
     #ifdef _WIN32

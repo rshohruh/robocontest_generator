@@ -7,9 +7,7 @@ using namespace std;
 
 string to_4digit(int n) {
     string s = to_string(n);
-    while (s.size() < 4) {
-        s = "0" + s;
-    }
+    s.insert(0, 4 - s.size(), '0');
     return s;
 }
 
