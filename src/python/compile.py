@@ -19,8 +19,7 @@ while os.path.exists(input_file):
     k = os.system(s)
     end = time.time()
 
-    time_taken = end - start
-
+    time_taken = round(end - start, 5)
     if k == 0:
         print(f"Test {i:04} OK Time: {time_taken} sec")
         
