@@ -1,16 +1,16 @@
 import os
 from time import time
+lang = 'cpp' if os.path.exists('solution.cpp') else 'py'
 
 i = 1
 input_file = f"tests/{i:04}.in"
 output_file = f"tests/{i:04}.out"
 
-lang = 'cpp' if os.path.exists('solution.cpp') else 'py'
-
 max_time = [0, 0]
 errors = []
-
-command = 'g++ -o solution solution.cpp' if lang == 'cpp' else 'python3 solution.py'
+if lang == 'cpp':
+    os.system('g++ -o solution solution.cpp')
+command = './solution' if lang == 'cpp' else 'python3 solution.py'
 while os.path.exists(input_file):
     start_time = time()
     
@@ -36,4 +36,7 @@ if len(errors):
         print(f'{i:04}', sep='\t')
 else:
     print('all testcases created succesfully')
-    print(f'the slowest testcase: {max_time[1]}: {max_time[1]} seconds')
+    print(f'the slowest testcase: {max_time[1]} - {"%.4f"%max_time[0]} seconds')
+
+if lang == 'cpp':
+    os.remove('solution')
