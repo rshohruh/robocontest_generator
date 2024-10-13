@@ -16,11 +16,11 @@ def main():
     os.makedirs(dest)
     counter = 3
     for filename in os.listdir(src):
-        # counter = int(filename.split('.')[-1])
-    
+        counter = int(filename.split('.')[-1])
+        if 'dummy' not in filename: counter += 2
         name = str(counter).zfill(4)
         suffix = filename.split('.')[-2]
-        if suffix == "out": continue
+        # if suffix == "out": continue
         new_filename = f"{name}.{suffix}"
         
         shutil.copy(os.path.join(src, filename), os.path.join(dest, new_filename))
@@ -28,3 +28,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# add to terminal alias export="/home/rshohruh/robocontst_generator/export.py"
