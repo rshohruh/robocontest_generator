@@ -1,42 +1,63 @@
 import os
+import subprocess
 from time import time
-lang = 'cpp' if os.path.exists('solution.cpp') else 'py'
 
+# Determine the language and paths
+lang = 'cpp' if os.path.exists('env/solution.cpp') else 'py'
+tests_dir = 'env/tests/'
+executable = 'env/solution' if lang == 'cpp' else 'env/solution.py'
+
+# Compile if C++
+if lang == 'cpp':
+    compile_process = subprocess.run(['g++', '-o', executable, 'env/solution.cpp'], capture_output=True)
+    if compile_process.returncode != 0:
+        print("Compilation failed:")
+        print(compile_process.stderr.decode())
+        exit(1)
+
+# Initialize variables
 i = 1
-input_file = f"tests/{i:04}.in"
-output_file = f"tests/{i:04}.out"
-
 max_time = [0, 0]
 errors = []
-if lang == 'cpp':
-    os.system('g++ -o solution solution.cpp')
-command = './solution' if lang == 'cpp' else 'python3 solution.py'
-while os.path.exists(input_file):
-    start_time = time()
+
+# Iterate through test cases
+while True:
+    input_file = f"{tests_dir}{i:04}.in"
+    output_file = f"{tests_dir}{i:04}.out"
     
+    if not os.path.exists(input_file):
+        break  # Exit loop if no more test cases
+
+    start_time = time()
+
     try:
-        os.system(f'{command} < {input_file} > {output_file}')
-        print(f'test {i:04} ok')
-    except:
-        print(f'test {i:04} error')
+        # Run the command
+        if lang == 'cpp':
+            subprocess.run([executable], stdin=open(input_file), stdout=open(output_file, 'w'), check=True)
+        else:
+            subprocess.run(['python3', executable], stdin=open(input_file), stdout=open(output_file, 'w'), check=True)
+        
+        print(f'Executed {output_file}')
+    except subprocess.CalledProcessError:
+        print(f'Test {i:04} error')
         errors.append(i)
 
     exec_time = time() - start_time
-    if max_time[0] < exec_time:
+    if exec_time > max_time[0]:
         max_time[0] = exec_time
         max_time[1] = i
-    
+
     i += 1
-    input_file = f"tests/{i:04}.in"
-    output_file = f"tests/{i:04}.out"
 
-if len(errors):
-    print('following testcases created with errors:')
+# Report results
+if errors:
+    print('Following test cases created with errors:')
     for error in errors:
-        print(f'{i:04}', sep='\t')
+        print(f'{error:04}')
 else:
-    print('all testcases created succesfully')
-    print(f'the slowest testcase: {max_time[1]} - {"%.4f"%max_time[0]} seconds')
+    print('\nAll test cases without errors')
+    print(f'The slowest test case: {max_time[1]} - {"%.4f" % max_time[0]} seconds')
 
+# Clean up if C++
 if lang == 'cpp':
-    os.remove('solution')
+    os.remove(executable)
