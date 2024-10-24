@@ -1,7 +1,6 @@
 import os
 import shutil
 import sys
-import re
 
 def get_new_filename(counter, suffix):
     """Generate a new filename based on the counter and suffix."""
@@ -26,7 +25,6 @@ def process_files(src, dest):
             if number[-1] > '9':
                 c = ord(number[-1]) - ord('a')
                 number = number[:-1]
-                # number.pop()
             main_tests.append((number, c, filename))
 
     # Sort files to maintain order
@@ -39,34 +37,50 @@ def process_files(src, dest):
         new_input_file = get_new_filename(counter, 'in')
         new_output_file = get_new_filename(counter, 'out')
         
-        shutil.copy(os.path.join(src, old_input_file), os.path.join(dest, new_input_file))
-        print(f'Copied: {old_input_file} -> {new_input_file}')
+        try:
+            shutil.copy(os.path.join(src, old_input_file), os.path.join(dest, new_input_file))
+            print(f'Copied: {old_input_file} -> {new_input_file}')
 
-        shutil.copy(os.path.join(src, old_output_file), os.path.join(dest, new_output_file))
-        print(f'Copied: {old_output_file} -> {new_output_file}')
+            shutil.copy(os.path.join(src, old_output_file), os.path.join(dest, new_output_file))
+            print(f'Copied: {old_output_file} -> {new_output_file}')
+        except IOError as e:
+            print(f"Error copying file: {e}")
         
         counter += 1
 
     # Process other files
     for number, c, old_input_file in main_tests:
-
         old_output_file = old_input_file.replace('in', 'out')
         new_input_file = get_new_filename(counter, 'in')
         new_output_file = get_new_filename(counter, 'out')
         
-        shutil.copy(os.path.join(src, old_input_file), os.path.join(dest, new_input_file))
-        print(f'Copied: {old_input_file} \t -> {new_input_file}')
+        try:
+            shutil.copy(os.path.join(src, old_input_file), os.path.join(dest, new_input_file))
+            print(f'Copied: {old_input_file} \t -> {new_input_file}')
 
-        shutil.copy(os.path.join(src, old_output_file), os.path.join(dest, new_output_file))
-        print(f'Copied: {old_output_file} \t -> {new_output_file}')
+            shutil.copy(os.path.join(src, old_output_file), os.path.join(dest, new_output_file))
+            print(f'Copied: {old_output_file} \t -> {new_output_file}')
+        except IOError as e:
+            print(f"Error copying file: {e}")
         
         counter += 1
 
 def main():
+    if len(sys.argv) < 2:
+        print("Usage: python export.py <source_directory>")
+        sys.exit(1)
 
     src = sys.argv[1]
+    if not os.path.isdir(src):
+        print(f"Error: {src} is not a valid directory")
+        sys.exit(1)
 
-    dest = "./env/tests/"
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    dest = os.path.join(script_dir, "env", "tests")
+    
+    if not os.path.exists(dest):
+        os.makedirs(dest)
+
     process_files(src, dest)
 
 if __name__ == "__main__":
