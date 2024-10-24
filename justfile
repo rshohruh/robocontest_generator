@@ -18,3 +18,14 @@ export folder:
     rm -rf env/tests
     mkdir env/tests
     python3 src/export.py {{folder}}
+
+# Clean workspace
+clean:
+    rm -rf env/tests env/solution.cpp env/generator.py
+
+
+# Build all 
+build_all:
+    just new
+    just generate 1 100
+    just compile
