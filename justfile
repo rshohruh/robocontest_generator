@@ -21,6 +21,15 @@ import folder:
     mv ./src/env/tests ./env
     rm -r ./src/env/
 
+# Swap order of tests
+swap-tests file1 file2:
+    mv ./env/tests/{{ file1 }}.in dummy.in
+    mv ./env/tests/{{ file1 }}.out dummy.out
+    mv ./env/tests/{{ file2 }}.in ./env/tests/{{ file1 }}.in
+    mv ./env/tests/{{ file2 }}.out ./env/tests/{{ file1 }}.out
+    mv dummy.in ./env/tests/{{ file2 }}.in
+    mv dummy.out ./env/tests/{{ file2 }}.out
+
 # Clean workspace
 clean:
     rm -rf ./env/tests env/solution.cpp ./env/generator.py

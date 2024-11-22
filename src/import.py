@@ -25,7 +25,7 @@ def process_files(src, dest):
             if number[-1] > '9':
                 c = ord(number[-1]) - ord('a')
                 number = number[:-1]
-            main_tests.append((number, c, filename))
+            main_tests.append((int(number), c, filename))
 
     # Sort files to maintain order
     dummy_tests.sort()
