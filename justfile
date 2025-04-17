@@ -2,8 +2,8 @@
 new:
     rm -rf ./env
     mkdir ./env
-    code ./env/solution.cpp
-    code ./env/generator.py
+    touch ./env/solution.cpp
+    touch ./env/generator.py
 
 # Generate testcases based on env/generator.py
 generate start end:
