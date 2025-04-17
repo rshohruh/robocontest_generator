@@ -67,7 +67,7 @@ def process_files(src, dest):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python export.py <source_directory>")
+        print("Usage: python import.py <source_directory>")
         sys.exit(1)
 
     src = sys.argv[1]
