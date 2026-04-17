@@ -20,8 +20,9 @@ def process_files(src, dest):
         if 'dummy' in filename:
             dummy_tests.append(filename)
         else:
-            base_name, suffix, number = filename.split('.')
+            base_name, suffix = filename.split('.')
             c = 0
+            number = "1"
             if number[-1] > '9':
                 c = ord(number[-1]) - ord('a')
                 number = number[:-1]

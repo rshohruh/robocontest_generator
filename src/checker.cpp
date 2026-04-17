@@ -38,6 +38,18 @@ int nextInt(){
 
 
 void read(){
+    double ans; author >> ans;
+    double ex;
+    string token = nextToken();
+    try {
+        ex = std::stod(token);
+    } catch (const std::exception&) {
+        exit(pe);
+    }
+    if(user >> token) exit(pe);
+    if(abs(ans - ex) > 1e-5) exit(wa);
+    exit(ac);
+    // double ex = stod
     // write code here ...
 }
 
