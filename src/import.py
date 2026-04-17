@@ -2,86 +2,84 @@ import os
 import shutil
 import sys
 
-def get_new_filename(counter, suffix):
-    """Generate a new filename based on the counter and suffix."""
-    name = str(counter).zfill(4)
-    return f"{name}.{suffix}"
+
+def parse_main_test(filename):
+    """Parse a main test filename like '1.in', '2a.in', '3.suffix.b.in'.
+    Returns (number, letter_offset) for sorting, or None if unrecognized."""
+    base = filename[:-3]  # strip '.in'
+    parts = base.split(".")
+    raw = parts[0]
+    letter_offset = 0
+    if raw and raw[-1].isalpha():
+        letter_offset = ord(raw[-1]) - ord("a") + 1
+        raw = raw[:-1]
+    try:
+        return (int(raw), letter_offset)
+    except ValueError:
+        return None
+
 
 def process_files(src, dest):
-    """Process files in the source directory and copy them to the destination."""
-    counter = 1
     dummy_tests = []
     main_tests = []
 
-    # First, categorize files into dummy and other files
     for filename in os.listdir(src):
-        if 'out' in filename:
+        if not filename.endswith(".in"):
             continue
-        if 'dummy' in filename:
+        if "dummy" in filename:
             dummy_tests.append(filename)
         else:
-            base_name, suffix, number = filename.split('.')
-            c = 0
-            if number[-1] > '9':
-                c = ord(number[-1]) - ord('a')
-                number = number[:-1]
-            main_tests.append((int(number), c, filename))
+            key = parse_main_test(filename)
+            if key is None:
+                print(f"Warning: skipping unrecognized filename: {filename}")
+                continue
+            main_tests.append((*key, filename))
 
-    # Sort files to maintain order
     dummy_tests.sort()
     main_tests.sort()
 
-    # Process dummy files
-    for old_input_file in dummy_tests:
-        old_output_file = old_input_file.replace('in', 'out')
-        new_input_file = get_new_filename(counter, 'in')
-        new_output_file = get_new_filename(counter, 'out')
-        
-        try:
-            shutil.copy(os.path.join(src, old_input_file), os.path.join(dest, new_input_file))
-            print(f'Copied: {old_input_file} -> {new_input_file}')
+    counter = 1
 
-            shutil.copy(os.path.join(src, old_output_file), os.path.join(dest, new_output_file))
-            print(f'Copied: {old_output_file} -> {new_output_file}')
+    def copy_pair(old_in):
+        nonlocal counter
+        old_out = old_in[:-3] + ".out"
+        new_in = f"{counter:04}.in"
+        new_out = f"{counter:04}.out"
+        try:
+            shutil.copy(os.path.join(src, old_in), os.path.join(dest, new_in))
+            print(f"  {old_in} -> {new_in}")
+            out_src = os.path.join(src, old_out)
+            if os.path.exists(out_src):
+                shutil.copy(out_src, os.path.join(dest, new_out))
+                print(f"  {old_out} -> {new_out}")
+            else:
+                print(f"  Warning: no .out found for {old_in}")
         except IOError as e:
-            print(f"Error copying file: {e}")
-        
+            print(f"  Error copying {old_in}: {e}")
         counter += 1
 
-    # Process other files
-    for number, c, old_input_file in main_tests:
-        old_output_file = old_input_file.replace('in', 'out')
-        new_input_file = get_new_filename(counter, 'in')
-        new_output_file = get_new_filename(counter, 'out')
-        
-        try:
-            shutil.copy(os.path.join(src, old_input_file), os.path.join(dest, new_input_file))
-            print(f'Copied: {old_input_file} \t -> {new_input_file}')
+    for f in dummy_tests:
+        copy_pair(f)
+    for *_, f in main_tests:
+        copy_pair(f)
 
-            shutil.copy(os.path.join(src, old_output_file), os.path.join(dest, new_output_file))
-            print(f'Copied: {old_output_file} \t -> {new_output_file}')
-        except IOError as e:
-            print(f"Error copying file: {e}")
-        
-        counter += 1
+    print(f"\nImported {counter - 1} test case(s) to {dest}")
+
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python import.py <source_directory>")
+        print("Usage: import.py <source_directory>")
         sys.exit(1)
 
     src = sys.argv[1]
     if not os.path.isdir(src):
-        print(f"Error: {src} is not a valid directory")
+        print(f"Error: '{src}' is not a valid directory")
         sys.exit(1)
 
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    dest = os.path.join(script_dir, "env", "tests")
-    
-    if not os.path.exists(dest):
-        os.makedirs(dest)
-
+    dest = os.path.join(os.getcwd(), "env", "tests")
+    os.makedirs(dest, exist_ok=True)
     process_files(src, dest)
+
 
 if __name__ == "__main__":
     main()

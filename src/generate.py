@@ -2,30 +2,30 @@ import os
 import subprocess
 import sys
 
-# Create the tests directory if it doesn't exist
 os.makedirs("env/tests", exist_ok=True)
 
 try:
     start = int(sys.argv[1])
     end = int(sys.argv[2])
-    
     if start < 1 or end < start:
-        raise ValueError("Invalid range for test cases.")
-
-except ValueError as e:
+        raise ValueError("start must be >= 1 and end >= start")
+except (IndexError, ValueError) as e:
+    print(f"Usage: generate.py <start> <end>")
     print(f"Error: {e}")
     sys.exit(1)
 
-# Generate input files
+errors = []
 for i in range(start, end + 1):
-    input_file_path = f'env/tests/{i:04}.in'
+    input_file = f"env/tests/{i:04}.in"
     try:
-        # Use subprocess to run input.py and redirect output to the file
-        with open(input_file_path, 'w') as input_file:
-            subprocess.run(['python3', 'env/generator.py'], stdout=input_file, check=True)
-        print(f'Created: {input_file_path}')
+        with open(input_file, "w") as f:
+            subprocess.run(["python3", "env/generator.py", str(i)], stdout=f, check=True)
+        print(f"Created: {input_file}")
     except subprocess.CalledProcessError:
-        print(f'Error generating input for test case {i:04}')
-        continue
+        print(f"Error: failed to generate test {i:04}")
+        errors.append(i)
 
-print(f'All testcases created without errors')
+if errors:
+    print(f"\nFailed: {', '.join(f'{e:04}' for e in errors)}")
+else:
+    print(f"\nGenerated {end - start + 1} test case(s) successfully")
